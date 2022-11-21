@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Marca;
 use Illuminate\Http\Request;
 
+//aula 309
+use Illuminate\Support\Facades\Storage;
+
 class MarcaController extends Controller
 {
  
@@ -54,11 +57,39 @@ class MarcaController extends Controller
         
         // Aula 291
         //$marca = Marca::create($request->all());
-        $marca = $this->marca->create($request->all()); //alterado na aula 296
         
-        //return $marca;
 
-        //aula 298
+        //dd($request->nome);
+        //dd($request->get('nome'));
+        //dd($request->input('nome'));
+
+        //dd($request->imagem);
+
+        //Aula 304 upload de arquivos parte 2
+        $imagem = $request->file('imagem'); //recupera a imagem
+             //Segundo parametro disco foi omitido mas é configurado
+             //usando o arquivos config\filesystems
+             //quando omitido ele fica em local (storage\images)
+             //$image->store('imagens/x/y/z','public') armazena dentro da subpastas z
+
+        $imagem_urn = $imagem->store('imagens/','public'); //persiste a imagem
+        
+        //aula 303
+        //return $marca;
+        //$marca = $this->marca->create($request->all()); //alterado na aula 296
+        
+        $marca = $this->marca->create([ //alterado na aula 305 para salvar o caminho da imagem no banco
+            'nome' => $request ->nome,
+            'imagem' => $imagem_urn
+
+        ]);
+
+        //segunda opcao
+        //$marca->nome = $request->nome;
+        //$marca->imagem = $imagem_urn;
+        //$marca->save();
+
+        //aula 298        
         return response()->json($marca,201);
     }
 
@@ -127,8 +158,50 @@ class MarcaController extends Controller
 
         }
 
-        $marca->update($request->all());
+        //aula 302
 
+
+        if($request->method()==='PATCH'){
+            
+
+            //metodo PATCH (Valida apenas os campos enviados )
+            $regrasDinamicas = array();
+
+            //percorre as regras definidas no model
+            foreach($marca->rules() as $input => $regra){
+
+                if(array_key_exists($input, $request->all())){
+                    $regrasDinamicas[$input] = $regra;
+                }
+
+            }
+
+            $request->validate($regrasDinamicas,$marca->feedback());
+
+        }else{
+
+            //metodo PUT (Valida todos os campos )
+            $request->validate($marca->rules(),$marca->feedback());
+        }
+
+        
+        //aula 309 - removendo imagens antigas
+        // se o arquivo foi encaminhado no update então remove o antigo
+        if($request->file('imagem')){
+            Storage::disk('public')->delete($marca->imagem);
+        }
+
+        
+        //aula 308
+        //ATENÇAO para fazer update
+        // usar o método POST
+        // Acrescentar o parametros _method com o valor PUT ou PATCH
+        $imagem = $request->file('imagem');
+        $imagem_urn = $imagem->store('imagens/','public');   
+        $marca->update([ 
+            'nome' => $request ->nome,
+	        'imagem' => $imagem_urn
+	    ]);
         return response()->json($marca,200);
     }
 
@@ -138,7 +211,7 @@ class MarcaController extends Controller
      * @param  Integer
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
         
         //Aula 294 removendo registros via DELETE
@@ -157,6 +230,12 @@ class MarcaController extends Controller
 
             
         }
+
+        //aula 309 - removendo imagens antigas
+        // se o arquivo foi encaminhado no update então remove o antigo        
+        Storage::disk('public')->delete($marca->imagem);
+
+        
 
         $marca->delete();
 
