@@ -25,4 +25,11 @@ class Modelo extends Model
         ];
 
     }
+
+
+    //AULA 312 relacionamento entre marca e modelo
+    public function marca(){
+        //um modelo pertence a uma marca
+        return $this->belongsTo('App\Models\Marca');
+    }
 }

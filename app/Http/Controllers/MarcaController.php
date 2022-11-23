@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 //aula 309
 use Illuminate\Support\Facades\Storage;
 
+//aula 320
+use App\Repositories\MarcaRepository;
+
 class MarcaController extends Controller
 {
  
@@ -22,14 +25,79 @@ class MarcaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(REQUEST $request)
     {
+        
+        $marcaRepository = new MarcaRepository($this->marca);
+
+        
+        //trata o parametro atributos_modelos enviados via URL
+        if($request->has('atributos_modelos')){
+
+            $atributos_modelos = 'modelos:id,'.$request->atributos_modelos;
+            $marcaRepository->selectAtributosRegistrosRelacionados($atributos_modelos);
+
+        }else{
+            
+            $marcaRepository->selectAtributosRegistrosRelacionados('modelos');
+        }
+
+        //trata o parametro filtro enviados pela URL
+        if($request->has('filtro')){
+
+            $marcaRepository->filtro($request->filtro);
+            
+
+        }
+
+        if($request->has('atributos')){
+            $marcaRepository->selectAtributos($request->atributos);
+            
+        }
+
+        return response()->json($marcaRepository->getResultado(), 200);
+
+        //-----------------------logica velha--------------------
+        //--Excluida a partir da aula 320
+
+        /*
+        $marcas = array();
+        
+        if($request->has('atributos_modelos')){
+
+            $atributos_modelos = $request->atributos_modelos;
+            $marcas = $this->marca->with('modelos:id,'.$atributos_modelos);
+        }else{
+            $marcas = $this->marca->with('modelos');
+        }
+
+        if($request->has('filtro')){
+            
+            $filtros = explode(';',$request->filtro);
+            foreach($filtros as $key => $condicao){
+                $c = explode(':',$condicao);
+                $marcas = $marcas->where($c[0],$c[1],$c[2]);                
+            }
+        }
+
+        
+        if($request->has('atributos')){
+            
+            $atributos = $request->atributos;
+            $marcas = $marcas->selectRaw($atributos)->get();
+        }else{
+
+            $marcas = $marcas->get();
+        };
+
+        */
+        
         //aula 292 selecionando registros via get
-        $marcas = $this->marca->all(); //alterado na aula 296
+        //$marcas = $this->marca->with('modelos')->get(); //alterado na aula 296
         
         //return $marcas;
         //aula 298
-        return response()->json($marcas, 200);
+        
     }
 
     /**
@@ -72,7 +140,7 @@ class MarcaController extends Controller
              //quando omitido ele fica em local (storage\images)
              //$image->store('imagens/x/y/z','public') armazena dentro da subpastas z
 
-        $imagem_urn = $imagem->store('imagens/','public'); //persiste a imagem
+        $imagem_urn = $imagem->store('imagens','public'); //persiste a imagem
         
         //aula 303
         //return $marca;
@@ -103,7 +171,9 @@ class MarcaController extends Controller
     {
         //aula 292
         
-        $marca = $this->marca->find($id); //alterado na aula 296
+        //$marca = $this->marca->find($id); //alterado na aula 296
+        $marca = $this->marca->with('modelos')->find($id); //aula 312
+        
 
         //aula 297 
         if($marca === null){
@@ -197,11 +267,25 @@ class MarcaController extends Controller
         // usar o método POST
         // Acrescentar o parametros _method com o valor PUT ou PATCH
         $imagem = $request->file('imagem');
-        $imagem_urn = $imagem->store('imagens/','public');   
+        $imagem_urn = $imagem->store('imagens','public');   
+
+        $marca->fill($request->all());
+        $marca->imagem = $imagem_urn;
+
+
+        
+        //aula 313
+        $marca->save();
+        
+        
+        /*
         $marca->update([ 
             'nome' => $request ->nome,
 	        'imagem' => $imagem_urn
 	    ]);
+        */
+
+
         return response()->json($marca,200);
     }
 

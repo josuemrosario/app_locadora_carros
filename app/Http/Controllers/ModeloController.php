@@ -6,6 +6,9 @@ use App\Models\Modelo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
+//aula 321
+use App\Repositories\ModeloRepository;
+
 class ModeloController extends Controller
 {
 
@@ -19,9 +22,79 @@ class ModeloController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(REQUEST $request)
     {
-        return response()->json($this->modelo->all(), 200);
+
+        $modeloRepository = new ModeloRepository($this->modelo);
+
+        //trata o parametro atributos_marca enviados via URL
+        if($request->has('atributos_marca')){
+
+            $atributos_marca = 'marca:id,'.$request->atributos_marca;
+            $modeloRepository->selectAtributosRegistrosRelacionados($atributos_marca);
+
+        }else{
+            
+            $modeloRepository->selectAtributosRegistrosRelacionados('marca');
+        }
+
+        //trata o parametro filtro enviados pela URL
+        if($request->has('filtro')){
+
+            $modeloRepository->filtro($request->filtro);
+            
+
+        }
+    
+        if($request->has('atributos')){
+            $modeloRepository->selectAtributos($request->atributos);
+            
+        }
+
+        return response()->json($modeloRepository->getResultado(), 200);        
+
+        
+        //----------------codigo velho anteiores a aula 321 ----------------//
+        
+        //aula 314 - selecionando apenas alguns atributos
+        /*
+        $modelos = array();
+
+        if($request->has('atributos_marca')){
+
+            $atributos_marca = $request->atributos_marca;
+            $modelos = $this->modelo->with('marca:id,'.$atributos_marca);
+        }else{
+            $modelos = $this->modelo->with('marca');
+        }
+        */
+
+        //aulas 316 e 317
+
+        /*
+        if($request->has('filtro')){
+            
+            $filtros = explode(';',$request->filtro);
+            foreach($filtros as $key => $condicao){
+                $c = explode(':',$condicao);
+                $modelos = $modelos->where($c[0],$c[1],$c[2]);                
+            }
+
+
+        }
+
+        if($request->has('atributos')){
+            
+            $atributos = $request->atributos;
+            $modelos = $modelos->selectRaw($atributos)->get();
+        }else{
+
+            $modelos = $modelos->get();
+        };
+        
+        //return response()->json($this->modelo->with('marca')->get(), 200);
+        return response()->json($modelos, 200);
+        */
     }
 
     /**
@@ -42,6 +115,9 @@ class ModeloController extends Controller
      */
     public function store(Request $request)
     {
+      
+        
+      
         $request->validate($this->modelo->rules());
 
         
@@ -49,8 +125,10 @@ class ModeloController extends Controller
         $imagem = $request->file('imagem');
         $imagem_urn = $imagem->store('imagens/modelos','public'); 
 
-        
+
         //cria o registro no banco
+      
+
         $modelo = $this->modelo->create([ 
             'marca_id' => $request->marca_id,
             'nome' => $request ->nome,
@@ -60,6 +138,9 @@ class ModeloController extends Controller
             'air_bag' => $request->air_bag,
             'abs' => $request->abs
         ]);
+        
+
+        
 
         return response()->json($modelo,201);
 
@@ -75,7 +156,9 @@ class ModeloController extends Controller
     {
         
         //busca o modelo via id
-        $modelo = $this->modelo->find($id); //alterado na aula 296
+        //$modelo = $this->modelo->find($id); //alterado na aula 296
+        $modelo = $this->modelo->with('marca')->find($id); //aula 312
+
 
         
         //será que o modelo existe ?
@@ -164,10 +247,17 @@ class ModeloController extends Controller
         $imagem = $request->file('imagem');
         $imagem_urn = $imagem->store('imagens/modelos','public');  
         
+    
         
+        $modelo->fill($request->all());
+        $modelo->imagem = $imagem_urn;
         
         
         //efetua o update na tabela
+        $modelo->save();
+
+
+        /*
         $modelo->update([ 
             'marca_id' => $request->marca_id,
             'nome' => $request ->nome,
@@ -177,6 +267,7 @@ class ModeloController extends Controller
             'air_bag' => $request->air_bag,
             'abs' => $request->abs    
 	    ]);
+        */
 
         //RETORNA O MODELO
         return response()->json($modelo,200);
