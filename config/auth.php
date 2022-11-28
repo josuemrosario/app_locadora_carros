@@ -42,7 +42,8 @@ return [
         ],
 
         'api' => [
-            'driver' => 'token',
+            //'driver' => 'token', comentado aula 329
+            'driver' => 'jwt',
             'provider' => 'users',
             'hash' => false,
         ],
