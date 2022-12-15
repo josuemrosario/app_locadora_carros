@@ -5,3 +5,12 @@ git add .
 git commit -m "Descrição das alteracoes"
 git push -u origin main
 
+
+
+Laravel
+=======
+
+Colocar a aplicação no ar
+Php artisan serve
+
+

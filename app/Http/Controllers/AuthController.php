@@ -25,14 +25,23 @@ class AuthController extends Controller
     }
     
     public function logout(){   
-        return 'logout';
+        //return 'logout';
+        //aula 338
+        auth('api')->logout();
+        return response()->json(['msg' => 'logout realizado com sucesso']);
     }
 
     public function refresh(){   
-        return 'refresh';
+        //return 'refresh';
+        //aula 337
+        $token = auth('api')->refresh();
+        return response()->json(['token' => $token]);
     }
 
     public function me(){   
-        return 'me';
+        //return 'me';
+        //aula 336 recuperando dados do usuario
+        return response()->json(auth()->user());
     }
 }
+ 

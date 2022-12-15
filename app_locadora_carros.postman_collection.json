@@ -1,0 +1,1033 @@
+{
+	"info": {
+		"_postman_id": "eb6795c7-6c3c-4528-b487-50505981f104",
+		"name": "app_locadora_carros",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24340391"
+	},
+	"item": [
+		{
+			"name": "Marca",
+			"item": [
+				{
+					"name": "cadastrar_marca",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "nome",
+									"value": "Hyndai",
+									"type": "text"
+								},
+								{
+									"key": "imagem",
+									"type": "file",
+									"src": "/G:/Estudo/Desenvolvimento Web Avançado 2022 com PHP Laravel e VueJS/Aula 303 - Upload de arquivos/imagens_marcas/hyundai.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/marca",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"marca"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pesquisar_modelos_Marcas",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "nome",
+									"value": "Volkswagen_teste_PUT2",
+									"type": "text"
+								},
+								{
+									"key": "imagem",
+									"value": "imagem_Volkswagen_teste.jpg",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/modelo?atributos=nome,marca_id,id,numero_portas&atributos_marca=nome,imagem&filtro=numero_portas:=:5",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"modelo"
+							],
+							"query": [
+								{
+									"key": "atributos",
+									"value": "nome,marca_id,id,numero_portas"
+								},
+								{
+									"key": "atributos_marca",
+									"value": "nome,imagem"
+								},
+								{
+									"key": "filtro",
+									"value": "numero_portas:=:5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pesquisar_Marcas",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/marca?atributos=id,nome,imagem",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"marca"
+							],
+							"query": [
+								{
+									"key": "atributos",
+									"value": "id,nome,imagem"
+								},
+								{
+									"key": "atributos_modelos",
+									"value": "id,marca_id,nome,imagem",
+									"disabled": true
+								},
+								{
+									"key": "filtro",
+									"value": "nome:like:ford%",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Modelo",
+			"item": [
+				{
+					"name": "Cadastrar_Modelo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "nome",
+									"value": "modelo de teste",
+									"type": "text"
+								},
+								{
+									"key": "imagem",
+									"type": "file",
+									"src": "/G:/Estudo/Desenvolvimento Web Avançado 2022 com PHP Laravel e VueJS/Aula 311 - Modelo/imagens_modelos/volkswagen_polo_1_0.png"
+								},
+								{
+									"key": "marca_id",
+									"value": "18",
+									"type": "text"
+								},
+								{
+									"key": "numero_portas",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "lugares",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "air_bag",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "abs",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/modelo",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"modelo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pesquisar_modelo",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNjcxMTMzNDA0LCJleHAiOjE2NzExMzcwMDQsIm5iZiI6MTY3MTEzMzQwNCwianRpIjoiS0JObVo0NndLUWYzbkZiUSIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.TO7ZfhMXN-BMUKBpjD6vey2OZFmJDea_t0BbY8wKEho",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "nome",
+									"value": "Volkswagen_teste_PUT2",
+									"type": "text"
+								},
+								{
+									"key": "imagem",
+									"value": "imagem_Volkswagen_teste.jpg",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/v1/modelo",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"modelo"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Carro",
+			"item": [
+				{
+					"name": "cadastrar_carro",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "modelo_id",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "placa",
+									"value": "AAA-3333",
+									"type": "text"
+								},
+								{
+									"key": "disponivel",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "km",
+									"value": "1000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/carro",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"carro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pesquisar_carro",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/carro/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"carro",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modificar_Carro",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "modelo_id",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "placa",
+									"value": "AAA-4444",
+									"type": "text"
+								},
+								{
+									"key": "disponivel",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "km",
+									"value": "1000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/carro/1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"carro",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletar_carro",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/carro/1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"carro",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cliente",
+			"item": [
+				{
+					"name": "cadastrar_cliente",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "nome",
+									"value": "Joao das dores de parto",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/cliente",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"cliente"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pesquisar_cliente",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNjY5NjQyMzkxLCJleHAiOjE2Njk2NDU5OTEsIm5iZiI6MTY2OTY0MjM5MSwianRpIjoia3l4NDQwS0ZIVzBjZkRCRyIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.A8lHX3c7HcY0vpuji2ndf9hGWHySHRdNyY2swrVZy3Y",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/v1/cliente",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"cliente"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modificar_Cliente",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "modelo_id",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "placa",
+									"value": "AAA-4444",
+									"type": "text"
+								},
+								{
+									"key": "disponivel",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "km",
+									"value": "1000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/cliente/1?nome=joao das dores de parto",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"cliente",
+								"1"
+							],
+							"query": [
+								{
+									"key": "nome",
+									"value": "joao das dores de parto"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletar_cliente",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/cliente/1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"cliente",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "locacao",
+			"item": [
+				{
+					"name": "cadastrar_locacao",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "cliente_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "carro_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "data_inicio_periodo",
+									"value": "2022-11-24",
+									"type": "text"
+								},
+								{
+									"key": "data_final_previsto_periodo",
+									"value": "2022-11-26",
+									"type": "text"
+								},
+								{
+									"key": "data_final_realizado_periodo",
+									"value": "2022-11-30",
+									"type": "text"
+								},
+								{
+									"key": "valor_diaria",
+									"value": "160",
+									"type": "text"
+								},
+								{
+									"key": "km_inicial",
+									"value": "1200",
+									"type": "text"
+								},
+								{
+									"key": "km_final",
+									"value": "6000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/locacao",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"locacao"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pesquisar_locacao",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/locacao/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"locacao",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modificar_locacao",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "cliente_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "carro_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "data_inicio_periodo",
+									"value": "2022-11-24",
+									"type": "text"
+								},
+								{
+									"key": "data_final_previsto_periodo",
+									"value": "2022-11-26",
+									"type": "text"
+								},
+								{
+									"key": "data_final_realizado_periodo",
+									"value": "2022-11-30",
+									"type": "text"
+								},
+								{
+									"key": "valor_diaria",
+									"value": "165",
+									"type": "text"
+								},
+								{
+									"key": "km_inicial",
+									"value": "1200",
+									"type": "text"
+								},
+								{
+									"key": "km_final",
+									"value": "60777",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/locacao/3",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"locacao",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletar_locacao",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/locacao/3",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"locacao",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Jwt",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "josue@josue.com.br",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "1234",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/login",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNjcxMTM0NTI1LCJleHAiOjE2NzExMzgxMjUsIm5iZiI6MTY3MTEzNDUyNSwianRpIjoiTEd2b2VRT1A3dTg3OGpSbyIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.sUcyPGNqgFyUMh6ci7M963UjzH6nf64coG1Ox7TlMfc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/v1/logout",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNjcxMTMzNDA0LCJleHAiOjE2NzExMzcwMDQsIm5iZiI6MTY3MTEzMzQwNCwianRpIjoiS0JObVo0NndLUWYzbkZiUSIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.TO7ZfhMXN-BMUKBpjD6vey2OZFmJDea_t0BbY8wKEho",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/v1/refresh",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "me",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNjcxMTMyNDE2LCJleHAiOjE2NzExMzYwMTYsIm5iZiI6MTY3MTEzMjQxNiwianRpIjoiNURKUGtiWTdVanNvaFVoaiIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.G-oyzM3msG2q9GlV7G218zmMCVNysnuRiM0tl5DyTdA",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/v1/me",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
