@@ -38,6 +38,17 @@ Vue.component('input-container-component', require('./components/InputContainer.
 //aula 353
 Vue.component('table-component', require('./components/Table.vue').default);
 
+//aula 354
+Vue.component('card-component', require('./components/Card.vue').default);
+
+//aula 356
+Vue.component('modal-component', require('./components/Modal.vue').default);
+
+
+//aula 362
+Vue.component('alert-component', require('./components/alert.vue').default);
+
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
