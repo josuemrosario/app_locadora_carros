@@ -62,8 +62,13 @@
                     <template v-slot:conteudo>
                         
                         <table-component 
-                            :dados="marcas"
-                            :titulos="['ID','Nome','Imagem']">
+                            :dados="marcas.data"
+                            :titulos="{
+                                id: {titulo: 'ID', tipo: 'texto'},
+                                nome: {titulo: 'NOME', tipo: 'texto'},
+                                imagem: {titulo: 'Imagem', tipo: 'imagem'},
+                                created_at: {titulo: 'Criação', tipo: 'data'}
+                            }">
                         </table-component>
 
 
@@ -155,7 +160,7 @@
                 arquivoImagem: [],
                 transacaoStatus: '',
                 transacaoDetalhes: {},
-                marcas:[]
+                marcas:{ data:[] }
             }
         },
         methods: {
