@@ -4,17 +4,41 @@
             <thead>
                 <tr>
                     <th scope="col" v-for="t, key in titulos" :key="key" >{{t.titulo}}</th>
+                    <th v-if="visualizar.visivel || atualizar || remover.visivel"></th>
                 </tr>
             </thead>
             <tbody>
 
                 <tr v-for="obj, chave in dadosFiltrados" :key="chave">
+                   
                     <td v-for="valor, chaveValor in obj" :key="chaveValor">
                         <span v-if="titulos[chaveValor].tipo == 'texto'">{{valor}}</span>
                         <span v-if="titulos[chaveValor].tipo == 'imagem'">
                             <img :src="'/storage/' + valor" width="30" height="30">
                         </span>
                         <span v-if="titulos[chaveValor].tipo == 'data'">{{'...'+valor}}</span>
+                    </td>
+                   
+                    <td v-if="visualizar.visivel || atualizar || remover.visivel">
+                        <button v-if="visualizar.visivel" 
+                                :data-toggle="visualizar.dataToggle"  
+                                :data-target="visualizar.dataTarget" 
+                                class="btn btn-outline-primary btn-sm"
+                                @click="setStore(obj)">
+                        
+                                Visualizar
+                        
+                        </button>
+                        
+                        <button v-if="atualizar" class="btn btn-outline-primary btn-sm">Atualizar</button>
+                        
+                        <button v-if="remover.visivel" 
+                                :data-toggle="remover.dataToggle"  
+                                :data-target="remover.dataTarget"
+                                class="btn btn-outline-danger btn-sm" 
+                                @click="setStore(obj)">
+                                Remover
+                        </button>
                     </td>
                 </tr>
 
@@ -52,7 +76,12 @@
 
 <script>
     export default {
-        props: ['dados' , 'titulos'],
+        props: ['dados' , 'titulos', 'atualizar', 'visualizar', 'remover'],
+        methods:{
+            setStore(obj){
+                this.$store.state.item = obj
+            }
+        },
         computed:{
             dadosFiltrados(){
 

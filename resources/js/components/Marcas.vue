@@ -20,7 +20,7 @@
                                     id-help="idHelp"
                                     texto-ajuda="Opcional. Informe o ID da marca">
                                 
-                                    <input type="number" class="form-control" id="inputId" aria-describedby="idHelp" placeholder="ID">
+                                    <input type="number" class="form-control" id="inputId" aria-describedby="idHelp" placeholder="ID" v-model="busca.id">
                                 
                                 </input-container-component>
                                 
@@ -35,7 +35,7 @@
                                     id-help="nomeHelp"
                                     texto-ajuda="Opcional. Informe o nome da marca">
                                 
-                                    <input type="text" class="form-control" id="inputNome" aria-describedby="nomeHelp" placeholder="Nome da Marca">
+                                    <input type="text" class="form-control" id="inputNome" aria-describedby="nomeHelp" placeholder="Nome da Marca" v-model="busca.nome">
                                 
                                 </input-container-component>
                             
@@ -45,7 +45,7 @@
                     </template>
 
                     <template v-slot:rodape>
-                        <button type="submit" class="btn btn-primary btn-sm float-right">Pesquisar</button>
+                        <button type="submit" class="btn btn-primary btn-sm float-right" @click="pesquisar()">Pesquisar</button>
                     </template>
                 
                 </card-component>
@@ -63,6 +63,9 @@
                         
                         <table-component 
                             :dados="marcas.data"
+                            :visualizar="{ visivel: true, dataToggle: 'modal', dataTarget: '#modalMarcaVisualizar' }"
+                            :atualizar="true"
+                            :remover="{ visivel: true, dataToggle: 'modal', dataTarget: '#modalMarcaRemover' }"
                             :titulos="{
                                 id: {titulo: 'ID', tipo: 'texto'},
                                 nome: {titulo: 'NOME', tipo: 'texto'},
@@ -75,8 +78,23 @@
                     </template>
 
                     <template v-slot:rodape>
+                        <div class="row">
+                            <!-- aula 372 paginação-->
+                            <div class="col-10">                                
+                                <paginate-component>
+                                    
+                                    <li v-for="l, key in marcas.links" :key="key" 
+                                        :class="l.active ? 'page-item active' : 'page-item' " 
+                                        @click="paginacao(l)">
+                                        <a class="page-link" v-html="l.label"></a>
+                                    </li>
+                                </paginate-component>
+                            </div>
+                            <div class="col">
+                                <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#modalMarca" >Adicionar</button>
+                            </div>
+                        </div>
 
-                        <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#modalMarca" >Adicionar</button>
 
                     </template>
 
@@ -87,6 +105,7 @@
         </div>
 
         <!-- aula 356 -->
+        <!-- Inicio modal inclusao de marca -->
         <modal-component id="modalMarca" titulo="Adicionar Marca" >
             
             
@@ -134,6 +153,60 @@
             </template>
 
         </modal-component>
+        <!-- FIM modal inclusao de marca -->
+        
+        <!-- Inicio modal visualização de marca -->
+        <modal-component id="modalMarcaVisualizar" titulo="Visualizar Marca" >
+             <template v-slot:alertas>
+             </template>
+             <template v-slot:conteudo >
+             
+                <input-container-component titulo="ID">
+                    <input type="text" class="form-control" :value="$store.state.item.id" disabled>
+                </input-container-component>
+
+                <input-container-component titulo="Nome da marca">
+                    <input type="text" class="form-control" :value="$store.state.item.nome" disabled>
+                </input-container-component>
+
+                <input-container-component titulo="Imagem" v-if="$store.state.item.imagem">
+                    <img :src="'storage/' + $store.state.item.imagem">
+                </input-container-component>             
+
+                <input-container-component titulo="Data Criação" >
+                    <input type="text" class="form-control" :value="$store.state.item.created_at" disabled>
+                </input-container-component>
+
+
+             </template>
+            <template v-slot:rodape>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </template>
+
+        </modal-component>
+        <!-- FIM modal visualização de marca -->
+
+        <!-- Inicio modal remoção de marca -->
+        <modal-component id="modalMarcaRemover" titulo="Remover Marca" >
+             <template v-slot:alertas>
+             </template>
+             <template v-slot:conteudo >
+             
+                <input-container-component titulo="ID">
+                    <input type="text" class="form-control" :value="$store.state.item.id" disabled>
+                </input-container-component>
+
+                <input-container-component titulo="Nome da marca">
+                    <input type="text" class="form-control" :value="$store.state.item.nome" disabled>
+                </input-container-component>           
+
+             </template>
+            <template v-slot:rodape>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </template>
+
+        </modal-component>
+        <!-- FIM modal remoção de marca -->
 
         
     </div>
@@ -156,14 +229,47 @@
         data() {
             return {
                 urlBase:'http://127.0.0.1:8000/api/v1/marca',
+                urlPaginacao: '',
+                urlFiltro: '',
                 nomeMarca: '',
                 arquivoImagem: [],
                 transacaoStatus: '',
                 transacaoDetalhes: {},
-                marcas:{ data:[] }
+                marcas:{ data:[] },
+                busca: { id:'', nome:''}
             }
         },
         methods: {
+            pesquisar(){
+                //console.log(this.busca)
+                let filtro = ''
+
+                for(let chave in this.busca){           
+                    if(this.busca[chave]){
+                        if(filtro != '')         {
+                            filtro +=";"
+                        }
+                        filtro += chave + ':like:' + this.busca[chave]
+                    }
+                }
+                
+                if(filtro!=''){
+                    this.urlPaginacao = 'page=1'
+                    this.urlFiltro = '&filtro=' + filtro
+                }else{
+                    this.urlFiltro = ''
+                }
+                
+                this.carregarlista()
+            },
+            paginacao(l){
+                if(l.url){
+                    //this.urlBase = l.url
+                    
+                    this.urlPaginacao = l.url.split('?')[1]
+                    this.carregarlista()
+                }  
+            },
             carregarlista(){
 
                 let config = {
@@ -173,7 +279,10 @@
                     }
                 }
 
-                axios.get(this.urlBase, config)
+                let url = this.urlBase + '?' + this.urlPaginacao + this.urlFiltro
+                console.log(url)
+
+                axios.get(url, config)
                     .then(response => {
                         this.marcas = response.data
                         //console.log(this.marcas)
