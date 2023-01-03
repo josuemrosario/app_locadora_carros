@@ -15,7 +15,9 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state: {
-        item: {}
+        item: {},
+        transacao: {status: '', mensagem: '', dados:''},
+        
     }
 })
 
@@ -68,6 +70,29 @@ Vue.component('paginate-component', require('./components/Paginate.vue').default
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+
+//aula 388
+Vue.filter('formataDataTempoGlobal', function(d){
+
+    if(!d)  return ''
+
+    d = d.split('T')
+
+    let data = d[0]
+    let tempo = d[1]
+
+    //formata a data
+    data = data.split('-')
+    data = data[2] + '/' + data[1] + '/' + data[0]
+
+    //formata o tempo
+    tempo = tempo.split('.')
+    tempo = tempo[0]
+
+
+    return data + ' ' + tempo
+
+})
 
 const app = new Vue({
     el: '#app',

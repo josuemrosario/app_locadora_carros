@@ -64,7 +64,7 @@
                         <table-component 
                             :dados="marcas.data"
                             :visualizar="{ visivel: true, dataToggle: 'modal', dataTarget: '#modalMarcaVisualizar' }"
-                            :atualizar="true"
+                            :atualizar="{ visivel: true, dataToggle: 'modal', dataTarget: '#modalMarcaAtualizar' }"
                             :remover="{ visivel: true, dataToggle: 'modal', dataTarget: '#modalMarcaRemover' }"
                             :titulos="{
                                 id: {titulo: 'ID', tipo: 'texto'},
@@ -189,8 +189,10 @@
         <!-- Inicio modal remoção de marca -->
         <modal-component id="modalMarcaRemover" titulo="Remover Marca" >
              <template v-slot:alertas>
+                <alert-component tipo="success"  titulo="Transação Realizada com Sucesso"  :detalhes="$store.state.transacao" v-if="$store.state.transacao.status=='sucesso'"> </alert-component>
+                <alert-component tipo="danger" titulo="Erro na Transação" :detalhes="$store.state.transacao" v-if="$store.state.transacao.status=='erro'"> </alert-component>
              </template>
-             <template v-slot:conteudo >
+             <template v-slot:conteudo v-if="$store.state.transacao.status!='sucesso'">
              
                 <input-container-component titulo="ID">
                     <input type="text" class="form-control" :value="$store.state.item.id" disabled>
@@ -203,10 +205,62 @@
              </template>
             <template v-slot:rodape>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-danger" v-if="$store.state.transacao.status!='sucesso'" @click="remover()" >Remover</button>
             </template>
 
         </modal-component>
         <!-- FIM modal remoção de marca -->
+
+        <!-- Inicio modal de atualização marca -->
+        <modal-component id="modalMarcaAtualizar" titulo="Atualizar Marca" >
+            
+            
+            <template v-slot:alertas>
+                <!--  aula 387 -->
+                <alert-component tipo="success"  titulo="Transação Realizada com Sucesso"  :detalhes="$store.state.transacao" v-if="$store.state.transacao.status=='sucesso'"> </alert-component>
+                <alert-component tipo="danger" titulo="Erro na Transação" :detalhes="$store.state.transacao" v-if="$store.state.transacao.status=='erro'"> </alert-component>
+            </template>
+
+            <!--conteudo do modal -->
+            <template v-slot:conteudo >
+
+               <div class="form-group">
+
+                    <input-container-component 
+                        titulo="Nome da Marca" 
+                        id="atualizarNome" 
+                        id-help="atualizarNomeHelp"
+                        texto-ajuda="Opcional. Informe o nome da marca">
+                    
+                        <input type="text" class="form-control" id="novoNome" aria-describedby="atualizarNomeHelp" placeholder="Nome da Marca" v-model="$store.state.item.nome">
+                    
+                    </input-container-component>
+
+                </div>    
+                
+                <div class="form-group">
+                    <input-container-component 
+                        titulo="Imagem" 
+                        id="atualizarImagem" 
+                        id-help="atualizarImagemHelp"
+                        texto-ajuda="Selecione uma imagem no formato PNG">
+                    
+                        <input type="file" class="form-control-file" id="atualizarImagem" aria-describedby="atualizarImagemHelp" placeholder="Selecione uma imagem" @change="carregarImagem($event)">
+                    
+                    </input-container-component>
+
+                </div>
+
+            </template>
+
+            <!-- Botoes que o modal devem mostrar -->
+            <template v-slot:rodape>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" @click="atualizar()">Atualizar</button>
+            </template>
+
+        </modal-component>
+        <!-- FIM modal atualização  de marca -->
 
         
     </div>
@@ -215,17 +269,8 @@
 <script>
     export default {
         //aula 360 cria o bearer token para ser passado para o header authorization
-        computed: {
-            token(){
-                let token = document.cookie.split(';').find(indice=>{
-                   return indice.startsWith('token=')
-                })
-                token = token.split('=')[1]
-                token = 'Bearer ' + token
-                
-                return token
-            }
-        },
+        //obs logica transferida para o bootstrap na aula 390
+
         data() {
             return {
                 urlBase:'http://127.0.0.1:8000/api/v1/marca',
@@ -240,6 +285,81 @@
             }
         },
         methods: {
+            atualizar(){
+                console.log('nome atualizado',)
+                console.log('imagem',)
+                console.log('verbo http','patch')
+
+                let formData = new FormData()
+                formData.append('_method', 'patch')
+                formData.append('nome', this.$store.state.item.nome)
+                if(this.arquivoImagem[0]){
+                    formData.append('imagem',this.arquivoImagem[0])
+                }
+
+                let config = {
+                    headers: {
+                        'Content-Type':'multipart/form-data',
+                    }
+                }
+
+                let url = this.urlBase + '/' + this.$store.state.item.id
+
+                axios.post(url,formData,config)
+                    .then(response=>{
+
+                            atualizarImagem.value = ''
+                            this.$store.state.transacao.status = 'sucesso'
+                            this.$store.state.transacao.mensagem = 'Registro de marca atualizado com sucesso'
+                            this.carregarlista()
+
+                        })
+                        .catch(errors => {
+
+                            this.$store.state.transacao.status = 'erro'
+                            this.$store.state.transacao.mensagem = errors.response.data.message
+                            this.$store.state.transacao.dados = errors.response.data.error
+                            
+                        })                
+
+
+
+            },
+            remover(){
+                let confirmacao = confirm('tem certeza que deseja remover este registro ?')
+                if(!confirmacao){
+                    return false
+                }
+                
+                let formData = new FormData()
+                formData.append('_method', 'delete')
+
+
+
+
+
+                let url = this.urlBase + '/' + this.$store.state.item.id
+                
+                axios.post(url,formData)
+                    .then(response=>{
+                        //console.log('registro removido com sucesso',response)
+                        this.$store.state.transacao.status = 'sucesso'
+                        this.$store.state.transacao.mensagem = response.data.msg
+                        this.carregarlista()
+                    })
+                    .catch(errors => {
+                        //console.log('Erro na tentativa de remoção do registro',errors.response.data)
+                        this.$store.state.transacao.status = 'erro'
+                        this.$store.state.transacao.mensagem = errors.response.data.msg
+
+                    })
+
+                
+
+                
+                
+                //console.log('chegamos ate aqui')
+            },
             pesquisar(){
                 //console.log(this.busca)
                 let filtro = ''
@@ -272,17 +392,11 @@
             },
             carregarlista(){
 
-                let config = {
-                    headers: {                        
-                        'Accept':'application/json',
-                        'Authorization': this.token
-                    }
-                }
 
                 let url = this.urlBase + '?' + this.urlPaginacao + this.urlFiltro
                 console.log(url)
 
-                axios.get(url, config)
+                axios.get(url)
                     .then(response => {
                         this.marcas = response.data
                         //console.log(this.marcas)
@@ -304,8 +418,7 @@
                 let config = {
                     headers: {
                         'Content-Type':'multipart/form-data',
-                        'Accept':'application/json',
-                        'Authorization': this.token
+
                     }
                 }
 

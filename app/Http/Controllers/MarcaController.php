@@ -257,25 +257,41 @@ class MarcaController extends Controller
         
         //aula 309 - removendo imagens antigas
         // se o arquivo foi encaminhado no update então remove o antigo
+        //if($request->file('imagem')){
+        //    Storage::disk('public')->delete($marca->imagem);
+        //}
+
+        //trecho de código alterado na aula 386 
+        //Preenche marca com os dados disponiveis no request
+        $marca->fill($request->all());
+
+        //imagem encaminhada na requisicao ?
         if($request->file('imagem')){
             Storage::disk('public')->delete($marca->imagem);
+            
+            $imagem = $request->file('imagem');
+            $imagem_urn = $imagem->store('imagens','public'); 
+            $marca->imagem = $imagem_urn;
         }
 
-        
+
+        $marca->save();
+        return response()->json($marca,200);
+
         //aula 308
         //ATENÇAO para fazer update
         // usar o método POST
         // Acrescentar o parametros _method com o valor PUT ou PATCH
-        $imagem = $request->file('imagem');
-        $imagem_urn = $imagem->store('imagens','public');   
+        //$imagem = $request->file('imagem');
+        //$imagem_urn = $imagem->store('imagens','public');   
 
-        $marca->fill($request->all());
-        $marca->imagem = $imagem_urn;
+        //$marca->fill($request->all());
+        //$marca->imagem = $imagem_urn;
 
 
         
         //aula 313
-        $marca->save();
+        //$marca->save();
         
         
         /*
@@ -286,7 +302,7 @@ class MarcaController extends Controller
         */
 
 
-        return response()->json($marca,200);
+        //return response()->json($marca,200);
     }
 
     /**

@@ -4,7 +4,7 @@
             <thead>
                 <tr>
                     <th scope="col" v-for="t, key in titulos" :key="key" >{{t.titulo}}</th>
-                    <th v-if="visualizar.visivel || atualizar || remover.visivel"></th>
+                    <th v-if="visualizar.visivel || atualizar.visivel || remover.visivel"></th>
                 </tr>
             </thead>
             <tbody>
@@ -16,10 +16,12 @@
                         <span v-if="titulos[chaveValor].tipo == 'imagem'">
                             <img :src="'/storage/' + valor" width="30" height="30">
                         </span>
-                        <span v-if="titulos[chaveValor].tipo == 'data'">{{'...'+valor}}</span>
+                        <span v-if="titulos[chaveValor].tipo == 'data'">
+                            {{valor | formataDataTempoGlobal}}
+                        </span>
                     </td>
                    
-                    <td v-if="visualizar.visivel || atualizar || remover.visivel">
+                    <td v-if="visualizar.visivel || atualizar.visivel || remover.visivel">
                         <button v-if="visualizar.visivel" 
                                 :data-toggle="visualizar.dataToggle"  
                                 :data-target="visualizar.dataTarget" 
@@ -30,7 +32,13 @@
                         
                         </button>
                         
-                        <button v-if="atualizar" class="btn btn-outline-primary btn-sm">Atualizar</button>
+                        <button v-if="atualizar.visivel" 
+                                :data-toggle="atualizar.dataToggle"  
+                                :data-target="atualizar.dataTarget"                        
+                                class="btn btn-outline-primary btn-sm"
+                                @click="setStore(obj)">
+                                Atualizar
+                        </button>
                         
                         <button v-if="remover.visivel" 
                                 :data-toggle="remover.dataToggle"  
@@ -79,6 +87,9 @@
         props: ['dados' , 'titulos', 'atualizar', 'visualizar', 'remover'],
         methods:{
             setStore(obj){
+                this.$store.state.transacao.status = ''
+                this.$store.state.transacao.mensagem = ''
+                this.$store.state.transacao.dados = ''
                 this.$store.state.item = obj
             }
         },
